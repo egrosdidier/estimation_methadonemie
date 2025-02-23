@@ -19,7 +19,7 @@ def estimate_methadonemie(dose, delay, days_consecutive, half_life=36):
     clearance = (0.693 / half_life) * (volume_distribution * weight)
     concentration = (dose * accumulation_factor / (volume_distribution * weight)) * np.exp(-0.693 * delay / half_life)
     
-    return max(min(concentration * 1000, 600), 0)  # Conversion en ng/mL et limitation à 600 ng/mL max
+    return max(min(concentration * 1000, 1000), 0)  # Conversion en ng/mL et limitation à 1000 ng/mL max
 
 # Interface Streamlit
 st.title("Estimation de la Méthadonémie")
@@ -40,6 +40,7 @@ if st.button("Estimer"):
     ax.plot(time, concentrations, label="Évolution de la Méthadonémie", color='blue')
     ax.axhline(100, color='green', linestyle='--', label='Seuil bas (100 ng/mL)')
     ax.axhline(400, color='red', linestyle='--', label='Zone thérapeutique (400 ng/mL)')
+    ax.set_ylim(0, 1000)  # Augmenter la limite supérieure à 1000 ng/mL
     ax.axvline(delay, color='purple', linestyle='--', label='Moment du prélèvement')
     ax.set_xlabel("Temps depuis la dernière prise (h)")
     ax.set_ylabel("Méthadonémie (ng/mL)")
