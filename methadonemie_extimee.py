@@ -6,12 +6,12 @@ def estimate_methadonemie(dose, delay, days_consecutive, half_life=36):
     """
     Estime la méthadonémie en fonction de la posologie, du délai depuis la dernière prise et du nombre de jours consécutifs.
     """
-    volume_distribution = 4  # L/kg, valeur clinique moyenne
+    volume_distribution = 3.5  # L/kg, valeur ajustée pour refléter les concentrations cliniques
     weight = 70  # Poids moyen en kg pour le calcul
     
     # Facteur d'accumulation basé sur le nombre de jours de prise
     if days_consecutive <= 14:
-        accumulation_factor = 1 - np.exp(-0.693 * days_consecutive / half_life)
+        accumulation_factor = 1 / (1 - np.exp(-0.693 * days_consecutive / half_life))
     else:
         accumulation_factor = 1 / (1 - np.exp(-0.693 * 24 / half_life))  # Équilibre atteint après >14 jours
     
