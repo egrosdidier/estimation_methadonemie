@@ -8,15 +8,15 @@ def estimate_methadonemie(dose, delay, days_consecutive, weight, half_life=36):
     """
     volume_distribution = 4  # L/kg, valeur clinique moyenne
     
-    # Ajustement progressif du facteur d'accumulation pour éviter une transition brutale
-    if days_consecutive < 14:
+    # Déterminer si le patient est à l'équilibre (après 5 demi-vies)
+    if days_consecutive < 5 * half_life / 24:
         accumulation_factor = (1 - np.exp(-0.693 * days_consecutive / half_life)) / (1 - np.exp(-0.693 * 24 / half_life))
     else:
-        accumulation_factor = (1 - np.exp(-0.693 * 14 / half_life)) / (1 - np.exp(-0.693 * 24 / half_life)) + (days_consecutive - 14) * 0.1
+        accumulation_factor = 1 / (1 - np.exp(-0.693 * 24 / half_life))  # Facteur d'équilibre stable
     
     # Calcul de la concentration attendue
-    clearance = (0.693 / half_life) * (volume_distribution * weight)
-    concentration = (dose * accumulation_factor / (volume_distribution * weight)) * np.exp(-0.693 * delay / half_life)
+    clearance = (0.693 / 36) * (volume_distribution * weight)  # Demi-vie fixée à 36h
+    concentration = (dose * accumulation_factor / (volume_distribution * weight)) * np.exp(-0.693 * delay / 36)
     
     return max(min(concentration * 1000, 1200), 0)  # Conversion en ng/mL et limitation à 1200 ng/mL max
 
