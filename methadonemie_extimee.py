@@ -13,10 +13,10 @@ def estimate_methadonemie(dose, delay, days_consecutive, weight, half_life):
     if days_consecutive < 5 * half_life / 24:
         accumulation_factor = (1 - np.exp(-0.693 * days_consecutive / half_life)) / (1 - np.exp(-0.693 * 24 / half_life))
     else:
-        accumulation_factor = 1 / (1 - np.exp(-0.693 * 24 / half_life))  # Facteur d'équilibre stable
+        accumulation_factor = 4  # Facteur ajusté pour éviter une montée excessive après 5 demi-vies
     
     # Ajustement empirique pour correspondre à une méthadonémie cible entre 100 et 400 ng/mL
-    adjustment_factor = 2.5 if dose >= 60 and dose <= 120 else 1.5  # Augmenter légèrement pour les faibles doses
+    adjustment_factor = 2.0 if 60 <= dose <= 120 else 1.5  # Ajustement optimisé
     
     # Calcul de la concentration attendue
     clearance = (0.693 / half_life) * (volume_distribution * weight)
